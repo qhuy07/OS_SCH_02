@@ -1,0 +1,67 @@
+ALGORITHM SRTF(Process_List) 
+Input: Danh sách tiến trình với Arrival_Time và Burst_Time 
+Output: Mô phỏng cơ chế Preemption và thời gian hoàn thành 
+  
+1.  current_time = 0 
+2.  completed_count = 0 
+3.  total_processes = length(Process_List) 
+4.  running_process = NULL 
+5.  Khởi tạo ready_queue rỗng 
+6.  Khởi tạo completed_list rỗng 
+  
+7.  WHILE completed_count < total_processes DO 
+        // 1. Cập nhật tiến trình mới đến 
+        FOR EACH process P IN Process_List DO 
+            IF P.Arrival_Time == current_time THEN 
+                P.Remaining_Time = P.Burst_Time 
+                Add P to ready_queue 
+            END IF 
+        END FOR 
+  
+        // 2. Kiểm tra cơ chế PREEMPTION
+        IF ready_queue IS NOT EMPTY THEN 
+            P_shortest = Process in ready_queue with MIN(Remaining_Time) 
+  
+            IF running_process == NULL THEN 
+                Remove P_shortest from ready_queue 
+                running_process = P_shortest 
+                PRINT "CPU bắt đầu chạy tiến trình: " + running_process.id + " tại t = " + current_time 
+             
+            ELSE IF P_shortest.Remaining_Time < running_process.Remaining_Time THEN 
+                // --- XẢY RA PREEMPTION --- 
+                PRINT ">>> PREEMPTION tại t = " + current_time + ": Tiến trình " + running_process.id + " bị ngắt bởi " + P_shortest.id 
+                 
+                Add running_process back to ready_queue 
+                Remove P_shortest from ready_queue 
+                running_process = P_shortest 
+                 
+                PRINT "CPU Switch: Chuyển sang chạy tiến trình " + running_process.id 
+            END IF 
+        END IF 
+
+        // --- BỔ SUNG: Xử lý trường hợp CPU rảnh rỗi (IDLE) ---
+        IF running_process == NULL AND ready_queue IS EMPTY THEN
+            PRINT "CPU IDLE tại t = " + current_time
+            current_time = current_time + 1
+            CONTINUE // Chuyển sang vòng lặp tiếp theo
+        END IF
+  
+        // 3. Thực thi tiến trình đang chạy trong 1 đơn vị thời gian 
+        IF running_process IS NOT NULL THEN 
+            running_process.Remaining_Time = running_process.Remaining_Time - 1 
+  
+            IF running_process.Remaining_Time == 0 THEN 
+                current_time_completed = current_time + 1 
+                running_process.Completion_Time = current_time_completed 
+                Add running_process to completed_list 
+                PRINT "Tiến trình " + running_process.id + " hoàn thành tại t = " + current_time_completed 
+                 
+                running_process = NULL 
+                completed_count = completed_count + 1 
+            END IF 
+        END IF 
+  
+        // 4. Tăng thời gian hệ thống 
+        current_time = current_time + 1 
+    END WHILE 
+END Algorithm
