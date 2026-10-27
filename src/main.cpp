@@ -144,3 +144,50 @@ string prevProcess = "";
 
     writeResultsToFile("output_srtf.csv", p, "SRTF", avgWT, avgTAT, contextSwitches);
 }
+// 4. THUẬT TOÁN SJF NON-PREEMPTIVE
+void runSJF_NonPreemptive(vector<Process> p) {
+    int n = p.size();
+    if (n == 0) return;
+
+    int currentTime = 0;
+    int completed = 0;
+    int contextSwitches = 0;
+    string prevProcess = "";
+
+    cout << "\nTHUAT TOAN SJF (NON-PREEMPTIVE)\n";
+
+    while (completed < n) {
+        int idx = -1;
+        int minBurst = 1e9;
+
+        for (int i = 0; i < n; i++) {
+            if (p[i].arrivalTime <= currentTime && p[i].remainingTime > 0) {
+                if (p[i].burstTime < minBurst) {
+                    minBurst = p[i].burstTime;
+                    idx = i;
+                }
+            }
+        }
+
+        if (idx != -1) {
+            if (!prevProcess.empty() && prevProcess != p[idx].id) contextSwitches++;
+            prevProcess = p[idx].id;
+            currentTime += p[idx].burstTime;
+            p[idx].remainingTime = 0;
+            completed++;
+
+            p[idx].completionTime = currentTime;
+            p[idx].turnaroundTime = p[idx].completionTime - p[idx].arrivalTime;
+            p[idx].waitingTime = p[idx].turnaroundTime - p[idx].burstTime;
+        } else {
+            currentTime++;
+        }
+    }
+
+    float totalWT = 0, totalTAT = 0;
+    for (int i = 0; i < n; i++) {
+        totalWT += p[i].waitingTime;
+        totalTAT += p[i].turnaroundTime;
+    }
+    float avgWT = totalWT / n;
+    float avgTAT = totalTAT / n;
