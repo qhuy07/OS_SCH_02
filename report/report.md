@@ -1,6 +1,7 @@
+```text
 ALGORITHM SRTF(Process_List) 
 Input: Danh sách tiến trình với Arrival_Time và Burst_Time 
-Output: Mô phỏng cơ chế Preemption và thời gian hoàn thành 
+Output: Mô phỏng cơ chế trưng dụng (Preemption) và thời gian hoàn thành 
   
 1.  current_time = 0 
 2.  completed_count = 0 
@@ -18,7 +19,7 @@ Output: Mô phỏng cơ chế Preemption và thời gian hoàn thành
             END IF 
         END FOR 
   
-        // 2. Kiểm tra cơ chế PREEMPTION
+        // 2. Kiểm tra cơ chế PREEMPTION (Trưng dụng) 
         IF ready_queue IS NOT EMPTY THEN 
             P_shortest = Process in ready_queue with MIN(Remaining_Time) 
   
@@ -39,12 +40,12 @@ Output: Mô phỏng cơ chế Preemption và thời gian hoàn thành
             END IF 
         END IF 
 
-        // --- BỔ SUNG: Xử lý trường hợp CPU rảnh rỗi (IDLE) ---
-        IF running_process == NULL AND ready_queue IS EMPTY THEN
-            PRINT "CPU IDLE tại t = " + current_time
-            current_time = current_time + 1
-            CONTINUE // Chuyển sang vòng lặp tiếp theo
-        END IF
+        // Bổ sung: Xử lý trường hợp CPU rảnh rỗi (IDLE) 
+        IF running_process == NULL AND ready_queue IS EMPTY THEN 
+            PRINT "CPU IDLE tại t = " + current_time 
+            current_time = current_time + 1 
+            CONTINUE 
+        END IF 
   
         // 3. Thực thi tiến trình đang chạy trong 1 đơn vị thời gian 
         IF running_process IS NOT NULL THEN 
