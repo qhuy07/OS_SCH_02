@@ -191,3 +191,32 @@ void runSJF_NonPreemptive(vector<Process> p) {
     }
     float avgWT = totalWT / n;
     float avgTAT = totalTAT / n;
+   // In màn hình
+    cout << "Process\tAT\tBT\tCT\tTAT\tWT\n";
+    for (int i = 0; i < n; i++) {
+        cout << p[i].id << "\t" << p[i].arrivalTime << "\t" << p[i].burstTime << "\t" 
+             << p[i].completionTime << "\t" << p[i].turnaroundTime << "\t" << p[i].waitingTime << "\n";
+    }
+    cout << "-> Tong so lan chuyen CPU: " << contextSwitches << "\n";
+    cout << "-> Avg WT: " << fixed << setprecision(2) << avgWT << " | Avg TAT: " << avgTAT << "\n";
+
+    writeResultsToFile("output_sjf_np.csv", p, "SJF_NonPreemptive", avgWT, avgTAT, contextSwitches);
+}
+
+int main() {
+    string filename = "input.csv";
+    
+    // Đọc danh sách tiến trình từ file input.csv đã tạo trên OnlineGDB
+    vector<Process> processes = readProcessesFromFile(filename);
+
+    if (processes.empty()) {
+        cout << "Khong co du lieu hoac chua tao file input.csv tren OnlineGDB!\n";
+        return 1;
+    }
+
+    // Chạy thuật toán SRTF và SJF Non-Preemptive
+    runSRTF(processes);
+    runSJF_NonPreemptive(processes);
+
+    return 0;
+}
