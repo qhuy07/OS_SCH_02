@@ -78,3 +78,58 @@ void writeResultsToFile(string filename, const vector<Process>& p, string algori
     file.close();
     cout << "-> Da xuat ket qua thanh cong vao file: " << filename << "\n";
 }
+
+// 3. THUẬT TOÁN SRTF (Preemptive)
+void runSRTF(vector<Process> p) {
+    int n = p.size();
+    if (n == 0) return;
+
+    int currentTime = 0;      
+    int completed = 0;
+string prevProcess = "";     
+    int contextSwitches = 0;  
+
+    cout << "\n================ THUAT TOAN SRTF (PREEMPTIVE) ===============\n";
+
+    while (completed < n) {
+        int idx = -1;
+        int minRemaining = 1e9; 
+
+        for (int i = 0; i < n; i++) {
+            if (p[i].arrivalTime <= currentTime && p[i].remainingTime > 0) {
+                if (p[i].remainingTime < minRemaining) {
+                    minRemaining = p[i].remainingTime;
+                    idx = i;
+                }
+            }
+        }
+
+        if (idx != -1) {
+            if (prevProcess != p[idx].id) {
+                if (!prevProcess.empty()) {
+                    contextSwitches++;
+                }
+                prevProcess = p[idx].id;
+            }
+
+            p[idx].remainingTime--;
+            currentTime++;
+
+            if (p[idx].remainingTime == 0) {
+                completed++;
+                p[idx].completionTime = currentTime;
+                p[idx].turnaroundTime = p[idx].completionTime - p[idx].arrivalTime;
+                p[idx].waitingTime = p[idx].turnaroundTime - p[idx].burstTime;
+            }
+        } else {
+            currentTime++;
+        }
+    }
+
+    float totalWT = 0, totalTAT = 0;
+    for (int i = 0; i < n; i++) {
+        totalWT += p[i].waitingTime;
+        totalTAT += p[i].turnaroundTime;
+    }
+    float avgWT = totalWT / n;
+    float avgTAT = totalTAT / n;
