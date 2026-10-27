@@ -1,7 +1,8 @@
 ```text
+                                                   SRTF (Shortest Remaining Time First)
 ALGORITHM SRTF(Process_List) 
 Input: Danh sách tiến trình với Arrival_Time và Burst_Time 
-Output: Mô phỏng cơ chế trưng dụng (Preemption) và thời gian hoàn thành 
+Output: Mô phỏng cơ chế Preemption và thời gian hoàn thành 
   
 1.  current_time = 0 
 2.  completed_count = 0 
@@ -19,7 +20,7 @@ Output: Mô phỏng cơ chế trưng dụng (Preemption) và thời gian hoàn t
             END IF 
         END FOR 
   
-        // 2. Kiểm tra cơ chế PREEMPTION (Trưng dụng) 
+        // 2. Kiểm tra cơ chế PREEMPTION
         IF ready_queue IS NOT EMPTY THEN 
             P_shortest = Process in ready_queue with MIN(Remaining_Time) 
   
