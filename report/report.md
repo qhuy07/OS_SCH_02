@@ -199,7 +199,7 @@ Chèn ảnh giao diện và kết quả chạy thật. Nhận xét dựa trên W
 
 ## 11. Phân công và đóng góp cá nhân
 Ghi rõ thành viên, nhiệm vụ, tệp phụ trách, commit Git và bằng chứng đóng góp. Mỗi thành viên cần hiểu thuật toán và có thể giải thích phần mình làm.
- STT | Họ và tên | MSSV | Nhiệm vụ / Output chịu trách nhiệm | Đánh giá |
+ STT | Họ và tên | MSSV | Nhiệm vụ | Đánh giá |
 |:---:|:---|:---:|:---|:---:|
 | 1 | **Ngụy Thái Dương** | `[072207010104]` | Pseudocode, code, GUI | **100%** |
 | 2 | **Vũ Thanh Hùng** | `[075207011121]` | code, GUI, report | **100%** |
@@ -210,7 +210,9 @@ Ghi rõ thành viên, nhiệm vụ, tệp phụ trách, commit Git và bằng ch
 
 
 ## 12. Tài liệu tham khảo
+'''text
 [1] A. Silberschatz, P. B. Galvin, and G. Gagne, "Chapter 5: CPU Scheduling," Operating System Concepts, 10th ed. [PowerPoint slides], 2018.
 [2] A. S. Tanenbaum and A. S. Woodhull, "Scheduling in batch systems," in Operating Systems: Design and Implementation, 3rd ed. Upper Saddle River, NJ, USA: Pearson Prentice Hall, 2006, ch. 2, sec. 2.4.2, pp. 100–101.
 [3] A. S. Tanenbaum and H. Bos, Modern Operating Systems, 4th ed. Upper Saddle River, NJ, USA: Pearson, 2015, pp. 157–158.
 [4] T. Anderson and M. Dahlin, Operating Systems: Principles and Practice, 2nd ed. Recursive Books, 2014.
+'''
