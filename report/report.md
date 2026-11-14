@@ -7,15 +7,15 @@ Lập lịch CPU là chức năng của hệ điều hành nhằm lựa chọn t
 ## 2. Mục tiêu
 - Cài đặt hai thuật toán lập lịch CPU.
 - Minh họa thứ tự thực thi bằng biểu đồ Gantt.
-- Tính CT, TAT, WT và RT.
+- Tính CT, TAT, WT.
 - Đọc dữ liệu từ CSV, kiểm tra dữ liệu đầu vào và xuất kết quả.
 - So sánh kết quả trên cùng một bộ tiến trình.
 
 ## 3. Phạm vi và giả định
-- Mỗi tiến trình có PID, Arrival Time và CPU Burst Time.
-- Arrival Time là số nguyên không âm; Burst Time là số nguyên dương; PID không trùng.
+- Mỗi tiến trình có Process_ID, Arrival Time và Burst Time.
+- Arrival Time là số nguyên không âm; Burst Time là số nguyên dương; Process_ID không trùng.
 - Thời gian chuyển ngữ cảnh được giả định bằng 0.
-- Khi bằng nhau, chương trình dùng Arrival Time rồi PID để phá hòa.
+- Khi bằng nhau, chương trình dùng Arrival Time rồi Process_ID để phá hòa.
 - Đây là mô hình học tập, không mô phỏng đầy đủ mọi chi tiết của bộ lập lịch trong hệ điều hành thực.
 
 ## 4. Cơ sở lý thuyết
@@ -29,13 +29,12 @@ Tại mỗi thời điểm, chọn tiến trình đã đến có thời gian cò
 - CT: thời điểm hoàn thành.
 - TAT = CT - Arrival Time.
 - WT = TAT - Burst Time.
-- RT = thời điểm bắt đầu chạy lần đầu - Arrival Time.
 - Thời gian chờ trung bình = tổng WT / số tiến trình.
 - Turnaround trung bình = tổng TAT / số tiến trình.
 
 ## 5. Phân tích và thiết kế
 ### 5.1. Đầu vào
-Danh sách tiến trình gồm PID, Arrival Time, Burst Time.
+Danh sách tiến trình gồm Process_ID, Arrival Time, Burst Time.
 
 ### 5.2. Đầu ra
 Biểu đồ Gantt, bảng các chỉ số theo từng tiến trình và số liệu trung bình để so sánh hai thuật toán.
@@ -60,7 +59,7 @@ while vẫn còn tiến trình chưa hoàn thành:
         chọn tiến trình có Burst Time nhỏ nhất
         chạy tiến trình đến khi hoàn thành
         ghi thời điểm bắt đầu và kết thúc
-tính CT, TAT, WT, RT
+tính CT, TAT, WT
 
 ALGORITHM SJF_Non_Preemptive(Process_List)
 Input: Danh sách tiến trình với Arrival_Time và Burst_Time
@@ -140,7 +139,7 @@ while vẫn còn tiến trình chưa hoàn thành:
         chạy 1 đơn vị thời gian
         nếu có tiến trình ngắn hơn đến, cho phép chuyển CPU
         ghi thời điểm chạy lần đầu và thời điểm hoàn thành
-tính CT, TAT, WT, RT
+tính CT, TAT, WT
 
 ALGORITHM SRTF(Process_List) 
 Input: Danh sách tiến trình với Arrival_Time và Burst_Time 
@@ -218,7 +217,7 @@ Thực hiện ít nhất các trường hợp:
 - Một tiến trình đến muộn, kiểm tra khoảng CPU rảnh.
 - Chỉ có một tiến trình.
 - Burst Time bằng nhau.
-- Dữ liệu sai: PID trùng, Arrival Time âm, Burst Time bằng 0 hoặc nhập chữ.
+- Dữ liệu sai: Process_ID trùng, Arrival Time âm, Burst Time bằng 0 hoặc nhập chữ.
 - Kiểm tra đối chiếu biểu đồ Gantt với bảng kết quả và công thức.
 
 | Trường hợp | Kết quả mong đợi |
