@@ -1,4 +1,4 @@
-```text
+
                                            SJF Non-Preemptive (Shortest Job First)
 ALGORITHM SJF_Non_Preemptive(Process_List)
 Input: Danh sách tiến trình với Arrival_Time và Burst_Time
@@ -66,8 +66,8 @@ Output: Mô phỏng chạy không ngắt (Non-preemptive) và thời gian hoàn 
     PRINT "Số lần Preemption: 0"
     PRINT "Avg Waiting: " + avg_waiting + " | Avg Turnaround: " + avg_turnaround
 END Algorithm
-```
-```text
+
+
                                                    SRTF (Shortest Remaining Time First)
 ALGORITHM SRTF(Process_List) 
 Input: Danh sách tiến trình với Arrival_Time và Burst_Time 
