@@ -204,15 +204,15 @@ Ghi rõ thành viên, nhiệm vụ, tệp phụ trách, commit Git và bằng ch
 | 1 | **Ngụy Thái Dương** | `[072207010104]` | Pseudocode, code, GUI | **100%** |
 | 2 | **Vũ Thanh Hùng** | `[075207011121]` | code, GUI, report | **100%** |
 | 3 | **Trịnh Quang Huy** | `[075207004369]` | code, GUI, report | **100%** |
-| 4 | **Nguyễn Hoàng Long** | `[Điền MSSV]` | Pseudocode, code, GUI | **100%** |
+| 4 | **Nguyễn Hoàng Long** | `[075207022166]` | Pseudocode, code, GUI | **100%** |
 | 5 | **Nguyễn Văn Trường** | `[075207008588]` | Testplan, code, GUI  | **100%** |
 ---
 
 
 ## 12. Tài liệu tham khảo
-'''text
+```text
 [1] A. Silberschatz, P. B. Galvin, and G. Gagne, "Chapter 5: CPU Scheduling," Operating System Concepts, 10th ed. [PowerPoint slides], 2018.
 [2] A. S. Tanenbaum and A. S. Woodhull, "Scheduling in batch systems," in Operating Systems: Design and Implementation, 3rd ed. Upper Saddle River, NJ, USA: Pearson Prentice Hall, 2006, ch. 2, sec. 2.4.2, pp. 100–101.
 [3] A. S. Tanenbaum and H. Bos, Modern Operating Systems, 4th ed. Upper Saddle River, NJ, USA: Pearson, 2015, pp. 157–158.
 [4] T. Anderson and M. Dahlin, Operating Systems: Principles and Practice, 2nd ed. Recursive Books, 2014.
-'''
+```
