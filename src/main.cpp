@@ -240,3 +240,75 @@ void OnRunButtonClicked(HWND hwnd) {
 
     UpdateLayout(hwnd); // Vẽ biểu đồ theo kích thước cửa sổ hiện tại
 }
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    switch (uMsg) {
+    case WM_CREATE:
+        runButton = CreateWindowA("BUTTON", "Chay Mo Phong & Doc input.csv",
+            WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+            20, 15, 320, 38, hwnd, (HMENU)1, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+
+        resultTextBox = CreateWindowA("EDIT", "Nhan nut phia tren de bat dau chay thuat toan...",
+            WS_VISIBLE | WS_CHILD | WS_BORDER | WS_VSCROLL | ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY,
+            20, 65, 640, 275, hwnd, NULL, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+        break;
+
+    case WM_SIZE:
+        // Tự động co giãn giao diện khi người dùng kéo viền cửa sổ hoặc bấm Phóng to
+        if (resultTextBox != NULL && wParam != SIZE_MINIMIZED) {
+            UpdateLayout(hwnd);
+        }
+        break;
+
+    case WM_GETMINMAXINFO: {
+        // Giới hạn kích thước thu nhỏ tối thiểu để giao diện không bị vỡ
+        MINMAXINFO* mmi = (MINMAXINFO*)lParam;
+        mmi->ptMinTrackSize.x = 520;
+        mmi->ptMinTrackSize.y = 480;
+        break;
+    }
+
+    case WM_COMMAND:
+        if (LOWORD(wParam) == 1) OnRunButtonClicked(hwnd);
+        break;
+
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        return 0;
+    }
+    return DefWindowProcA(hwnd, uMsg, wParam, lParam);
+}
+
+int main() {
+    HINSTANCE hInstance = GetModuleHandle(NULL);
+    const char* CLASS_NAME = "CPUSchedulerDesktopApp";
+
+    WNDCLASSEXA wc = {0};
+    wc.cbSize = sizeof(WNDCLASSEXA);
+    wc.lpfnWndProc = WindowProc;
+    wc.hInstance = hInstance;
+    wc.lpszClassName = CLASS_NAME;
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+
+    if (!RegisterClassExA(&wc)) return 1;
+
+    // Dùng WS_OVERLAPPEDWINDOW đầy đủ để cho phép phóng to & kéo giãn viền
+    HWND hwnd = CreateWindowExA(
+        0, CLASS_NAME, "CPU Scheduling GUI App (SRTF & SJF Non-Preemptive)",
+        WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT, CW_USEDEFAULT, 720, 610,
+        NULL, NULL, hInstance, NULL
+    );
+
+    if (hwnd == NULL) return 1;
+
+    ShowWindow(hwnd, SW_SHOW);
+    UpdateWindow(hwnd);
+
+    MSG msg = {0};
+    while (GetMessage(&msg, NULL, 0, 0)) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+    return 0;
+}
