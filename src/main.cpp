@@ -166,3 +166,77 @@ void runSJF_NonPreemptive(vector<Process> p, stringstream &out) {
     out << "Context Switches: " << contextSwitches << " | Avg WT: " << fixed << setprecision(2) << avgWT << " | Avg TAT: " << avgTAT << "\r\n";
     writeResultsToFile("output_sjf_np.csv", p, "SJF_NonPreemptive", avgWT, avgTAT, contextSwitches);
 }
+void ShowGantt(HWND hwnd, const vector<GanttBlock>& blocks, const char* title, int x, int y, int totalWidth) {
+    if (blocks.empty() || totalWidth <= 50) return;
+    int totalTime = blocks.back().end;
+
+    ganttControls.push_back(CreateWindowA("STATIC", title, WS_VISIBLE | WS_CHILD, x, y - 22, totalWidth, 20, hwnd, NULL, NULL, NULL));
+
+    for (size_t i = 0; i < blocks.size(); i++) {
+        int x1 = x + (blocks[i].start * totalWidth) / totalTime;
+        int w  = ((blocks[i].end - blocks[i].start) * totalWidth) / totalTime;
+        if (w < 18) w = 18; // Đảm bảo ô luôn đủ rộng để đọc chữ
+
+        ganttControls.push_back(CreateWindowA("BUTTON", blocks[i].id.c_str(),
+            WS_VISIBLE | WS_CHILD | WS_DISABLED,
+            x1, y, w, 34, hwnd, NULL, NULL, NULL));
+
+        ganttControls.push_back(CreateWindowA("STATIC", to_string(blocks[i].start).c_str(),
+            WS_VISIBLE | WS_CHILD, x1, y + 36, 25, 18, hwnd, NULL, NULL, NULL));
+
+        if (i == blocks.size() - 1) {
+            ganttControls.push_back(CreateWindowA("STATIC", to_string(blocks[i].end).c_str(),
+                WS_VISIBLE | WS_CHILD, x1 + w - 15, y + 36, 25, 18, hwnd, NULL, NULL, NULL));
+        }
+    }
+}
+
+// Hàm cập nhật bố cục tự động mỗi khi kéo to / thu nhỏ cửa sổ
+void UpdateLayout(HWND hwnd) {
+    RECT rc;
+    GetClientRect(hwnd, &rc);
+    int winW = rc.right - rc.left;
+    int winH = rc.bottom - rc.top;
+
+    int contentW = winW - 40;
+    if (contentW < 200) contentW = 200;
+
+    // Dành khoảng 200px phía dưới cho 2 biểu đồ Gantt, phần trên dành cho khung kết quả
+    int logH = winH - 275;
+    if (logH < 100) logH = 100;
+
+    MoveWindow(resultTextBox, 20, 65, contentW, logH, TRUE);
+
+    // Vẽ lại 2 biểu đồ Gantt khớp với chiều rộng và vị trí mới
+    for (HWND h : ganttControls) DestroyWindow(h);
+    ganttControls.clear();
+
+    int gantt1Y = 65 + logH + 35;
+    int gantt2Y = gantt1Y + 90;
+
+    ShowGantt(hwnd, ganttSRTF, "Bieu do Gantt - SRTF (Preemptive):", 20, gantt1Y, contentW);
+    ShowGantt(hwnd, ganttSJF,  "Bieu do Gantt - SJF (Non-Preemptive):", 20, gantt2Y, contentW);
+
+    InvalidateRect(hwnd, NULL, TRUE);
+}
+
+void OnRunButtonClicked(HWND hwnd) {
+    vector<Process> processes = readProcessesFromFile("input.csv");
+    if (processes.empty()) processes = readProcessesFromFile("input/input.csv");
+
+    if (processes.empty()) {
+        MessageBoxA(hwnd, "Khong tim thay file input.csv! Hay dat file input.csv cung thu muc voi file .exe.", "Thong bao loi", MB_OK | MB_ICONERROR);
+        return;
+    }
+
+    stringstream out;
+    out << "Da doc thanh cong file input.csv!\r\n\r\n";
+
+    runSRTF(processes, out);
+    runSJF_NonPreemptive(processes, out);
+
+    out << "\r\n-> Da xuat ket qua ra 2 file: output_srtf.csv va output_sjf_np.csv!";
+    SetWindowTextA(resultTextBox, out.str().c_str());
+
+    UpdateLayout(hwnd); // Vẽ biểu đồ theo kích thước cửa sổ hiện tại
+}
