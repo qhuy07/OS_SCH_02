@@ -56,7 +56,63 @@ void writeResultsToFile(string filename, const vector<Process>& p, string algori
     file << "Average_Turnaround_Time," << fixed << setprecision(2) << avgTAT << "\n";
     file.close();
 }
+void runSRTF(vector<Process> p, stringstream &out) {
+    ganttSRTF.clear();
+    int n = p.size();
+    if (n == 0) return;
+    int currentTime = 0, completed = 0, contextSwitches = 0;
+    string prevProcess = ""; // Lưu tên của Process trước
 
+    while (completed < n) {
+        int idx = -1, minRemaining = 1e9;
+        for (int i = 0; i < n; i++) {
+            if (p[i].arrivalTime <= currentTime && p[i].remainingTime > 0 && p[i].remainingTime < minRemaining) {
+                minRemaining = p[i].remainingTime;
+                idx = i;
+            }
+        }
+        if (idx != -1) {
+            if (prevProcess != p[idx].id) {
+                if (!prevProcess.empty()) contextSwitches++;
+                prevProcess = p[idx].id;
+            }
+            if (ganttSRTF.empty() || ganttSRTF.back().id != p[idx].id)
+                ganttSRTF.push_back({p[idx].id, currentTime, currentTime + 1});
+            else
+                ganttSRTF.back().end++;
+
+            p[idx].remainingTime--;
+            currentTime++;
+            if (p[idx].remainingTime == 0) {
+                completed++;
+                p[idx].completionTime = currentTime;
+                p[idx].turnaroundTime = p[idx].completionTime - p[idx].arrivalTime;
+                p[idx].waitingTime = p[idx].turnaroundTime - p[idx].burstTime;
+            }
+        } else {
+            if (ganttSRTF.empty() || ganttSRTF.back().id != "IDLE")
+                ganttSRTF.push_back({"IDLE", currentTime, currentTime + 1});
+            else
+                ganttSRTF.back().end++;
+            currentTime++;
+        }
+    }
+
+    float totalWT = 0, totalTAT = 0;
+    for (int i = 0; i < n; i++) {
+        totalWT += p[i].waitingTime;
+        totalTAT += p[i].turnaroundTime;
+    }
+    float avgWT = totalWT / n, avgTAT = totalTAT / n;
+
+    out << "  \tTHUAT TOAN SRTF (PREEMPTIVE)    \r\nID\tAT\tBT\tCT\tTAT\tWT\r\n";
+    for (int i = 0; i < n; i++) {
+        out << p[i].id << "\t" << p[i].arrivalTime << "\t" << p[i].burstTime << "\t" 
+            << p[i].completionTime << "\t" << p[i].turnaroundTime << "\t" << p[i].waitingTime << "\r\n";
+    }
+    out << "Context Switches: " << contextSwitches << " | Avg WT: " << fixed << setprecision(2) << avgWT << " | Avg TAT: " << avgTAT << "\r\n\r\n";
+    writeResultsToFile("output_srtf.csv", p, "SRTF", avgWT, avgTAT, contextSwitches);
+}
 
 
 
