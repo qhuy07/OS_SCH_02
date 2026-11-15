@@ -240,6 +240,7 @@ void OnRunButtonClicked(HWND hwnd) {
 
     UpdateLayout(hwnd); // Vẽ biểu đồ theo kích thước cửa sổ hiện tại
 }
+
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
     case WM_CREATE:
