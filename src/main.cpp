@@ -56,3 +56,57 @@ void writeResultsToFile(string filename, const vector<Process>& p, string algori
     file << "Average_Turnaround_Time," << fixed << setprecision(2) << avgTAT << "\n";
     file.close();
 }
+
+
+
+
+void runSJF_NonPreemptive(vector<Process> p, stringstream &out) {
+    ganttSJF.clear();
+    int n = p.size();
+    if (n == 0) return;
+    int currentTime = 0, completed = 0, contextSwitches = 0;
+    string prevProcess = "";
+
+    while (completed < n) {
+        int idx = -1, minBurst = 1e9;
+        for (int i = 0; i < n; i++) {
+            if (p[i].arrivalTime <= currentTime && p[i].remainingTime > 0 && p[i].burstTime < minBurst) {
+                minBurst = p[i].burstTime;
+                idx = i;
+            }
+        }
+        if (idx != -1) {
+            if (!prevProcess.empty() && prevProcess != p[idx].id) contextSwitches++;
+            prevProcess = p[idx].id;
+
+            ganttSJF.push_back({p[idx].id, currentTime, currentTime + p[idx].burstTime});
+            currentTime += p[idx].burstTime;
+            p[idx].remainingTime = 0;
+            completed++;
+            p[idx].completionTime = currentTime;
+            p[idx].turnaroundTime = p[idx].completionTime - p[idx].arrivalTime;
+            p[idx].waitingTime = p[idx].turnaroundTime - p[idx].burstTime;
+        } else {
+            if (ganttSJF.empty() || ganttSJF.back().id != "IDLE")
+                ganttSJF.push_back({"IDLE", currentTime, currentTime + 1});
+            else
+                ganttSJF.back().end++;
+            currentTime++;
+        }
+    }
+
+    float totalWT = 0, totalTAT = 0;
+    for (int i = 0; i < n; i++) {
+        totalWT += p[i].waitingTime;
+        totalTAT += p[i].turnaroundTime;
+    }
+    float avgWT = totalWT / n, avgTAT = totalTAT / n;
+
+    out << "  \tTHUAT TOAN SJF (NON-PREEMPTIVE)    \r\nID\tAT\tBT\tCT\tTAT\tWT\r\n";
+    for (int i = 0; i < n; i++) {
+        out << p[i].id << "\t" << p[i].arrivalTime << "\t" << p[i].burstTime << "\t" 
+            << p[i].completionTime << "\t" << p[i].turnaroundTime << "\t" << p[i].waitingTime << "\r\n";
+    }
+    out << "Context Switches: " << contextSwitches << " | Avg WT: " << fixed << setprecision(2) << avgWT << " | Avg TAT: " << avgTAT << "\r\n";
+    writeResultsToFile("output_sjf_np.csv", p, "SJF_NonPreemptive", avgWT, avgTAT, contextSwitches);
+}
